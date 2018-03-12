@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Display driving directions</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .overlay button {
+            font:600 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #3386c0;
+            color: #fff;
+            display: inline-block;
+            margin: 0;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .overlay button:hover {
+            background-color:#4ea0da;
+        }
+    </style>
+</head>
+<body>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.1.1/mapbox-gl-directions.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
+
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.1.1/mapbox-gl-directions.css' type='text/css' />
+<div id='map'></div>
+<div class='overlay'>
+    <button id='replay'>Replay</button>
+</div>
+
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoid2hpdHNvbnMiLCJhIjoiY2l0eW15ZDJ6MDhrbTJ5bjRuZGx1Z3lmZiJ9.4RXjTjxBUVzG2X3mdtcSZQ';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/whitsons/cjekrg6rrgu772rmrjitxpkb6',
+        center: [-123.286, 44.560],
+        pitch: 80, // pitch in degrees
+        zoom: 12
+    });
+    map.on('load', function () {
+        map.addSource('dem', {
+            "type": "raster-dem",
+            "url": "mapbox://mapbox.terrain-rgb"
+        });
+        map.addLayer({
+            "id": "hillshading",
+            "source": "dem",
+            "type": "hillshade"
+            // insert below waterway-river-canal-shadow;
+            // where hillshading sits in the Mapbox Outdoors style
+        }, 'waterway-river-canal-shadow');
+    });
+
+    map.addControl(new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+    }), 'top-left');
+
+
+</script>
+<div id='distance' class='distance-container'></div>
+
+</body>
+</html>
